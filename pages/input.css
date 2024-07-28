@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+* {
+    --text: #ededee;
+    --background: #19191a;
+    --primary: #9a9395;
+    --secondary: #242523;
+    --accent: #868d8c;
+
+    background-color: var(--background);
+    color: var(--text);
+    font-family: "Fira Sans", sans-serif;
+
+}
