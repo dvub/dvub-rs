@@ -1,4 +1,4 @@
-use axum::{routing::get, Router};
+use axum::{response::Html, routing::get, Router};
 use tokio::net::TcpListener;
 
 #[tokio::main]
@@ -12,8 +12,8 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn root() -> &'static str {
+async fn root() -> Html<&'static str> {
     println!("Serving root");
 
-    "Hello, World!"
+    Html(std::include_str!("../pages/index.html"))
 }
