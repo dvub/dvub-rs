@@ -1,3 +1,5 @@
+{%- import "nav/item.html" as nav -%}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,19 +16,24 @@
     <script src="https://unpkg.com/htmx.org@2.0.1" defer></script>
     <link href="../assets/output.css" rel="stylesheet">
 </head>
+<!--
+--text: #ededee;
+--background: #19191a;
+--primary: #9a9395;
+--secondary: #242523;
+--accent: #868d8c;
+-->
 
-<body class="m-5">
-    <div class=" header w-full flex text-3xl gap-5 ">
-        <a href="/">
-            <h1>DVUB</h1>
-        </a>
-        <a href="/posts">
-            <h1>Posts</h1>
-        </a>
-    </div>
-
-    <div class="main-content my-10">
-        <p>Hi! I'm a full-time student. I really like music, electronics, programming, and a bunch of other stuff!</p>
+<body class="bg-[#19191a] text-[#ededee]">
+    <ul class="p-5 w-full flex text-xl gap-5 list-none bg-[#242523]">
+        {% call nav::item("/", "Home") %}
+        {% call nav::item("/posts", "Posts") %}
+    </ul>
+    <div class="mx-[10vw] my-10 text-lg">
+        <p>Hi! I'm a full-time student. I really like music, electronics, programming, and a bunch of other stuff! Check
+            out some of my posts if you want :) </p>
+        <br />
+        <p></p>
     </div>
 </body>
 

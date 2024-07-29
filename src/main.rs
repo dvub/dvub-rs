@@ -1,5 +1,6 @@
 use std::path::Path;
 
+use askama::Template;
 use axum::{response::Html, routing::get, Router};
 use notify::{RecursiveMode, Watcher};
 use tokio::net::TcpListener;
@@ -15,7 +16,7 @@ async fn main() {
         .watch(Path::new("assets/"), RecursiveMode::Recursive)
         .unwrap();
     watcher
-        .watch(Path::new("pages/"), RecursiveMode::Recursive)
+        .watch(Path::new("templates"), RecursiveMode::Recursive)
         .unwrap();
 
     let app = Router::new()
@@ -29,10 +30,14 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn root() -> Html<&'static str> {
-    Html(std::include_str!("../pages/index.html"))
+#[derive(Template)]
+#[template(path = "index.html")]
+struct HomeTemplate {}
+
+async fn root() -> HomeTemplate {
+    HomeTemplate {}
 }
 
 async fn posts() -> Html<&'static str> {
-    Html(std::include_str!("../pages/posts.html"))
+    Html(std::include_str!("../templates/posts.html"))
 }
