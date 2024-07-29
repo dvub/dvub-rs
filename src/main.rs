@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{fs::read_dir, path::Path};
 
 use askama::Template;
 use axum::{response::Html, routing::get, Router};
@@ -34,10 +34,42 @@ async fn main() {
 #[template(path = "index.html")]
 struct HomeTemplate {}
 
+#[derive(Template)]
+#[template(path = "posts.html")]
+struct PostsTemplate {
+    posts: Vec<Post>,
+}
+
+struct Post {
+    name: String,
+}
+
 async fn root() -> HomeTemplate {
     HomeTemplate {}
 }
 
-async fn posts() -> Html<&'static str> {
-    Html(std::include_str!("../templates/posts.html"))
+async fn posts() -> PostsTemplate {
+    PostsTemplate { posts: Vec::new() }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs::{read_dir, read_to_string};
+
+    use scraper::{Html, Selector};
+
+    #[test]
+    fn test_dir() {
+        let posts_dir = read_dir("./templates/posts").unwrap();
+        for entry in posts_dir {
+            let path = entry.unwrap().path();
+            let str = read_to_string(path).unwrap();
+            let h = Html::parse_document(&str);
+            let s = Selector::parse("title").unwrap();
+            let a = h.select(&s);
+            for v in a {
+                println!("{:?}", v.value());
+            }
+        }
+    }
 }

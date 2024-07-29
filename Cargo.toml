@@ -8,6 +8,7 @@ askama = "0.12.1"
 askama_axum = "0.4.0"
 axum = "0.7.5"
 notify = "6.1.1"
+scraper = "0.19.1"
 tokio = { version = "1.39.2", features = ["full"] }
 tower-http = { version = "0.5.2", features = ["fs", "trace"]}
 tower-livereload = "0.9.3"
