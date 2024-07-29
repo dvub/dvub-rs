@@ -554,8 +554,9 @@ video {
   --tw-contain-style:  ;
 }
 
-.m-5 {
-  margin: 1.25rem;
+.mx-\[10vw\] {
+  margin-left: 10vw;
+  margin-right: 10vw;
 }
 
 .my-10 {
@@ -563,9 +564,8 @@ video {
   margin-bottom: 2.5rem;
 }
 
-.mx-\[10vw\] {
-  margin-left: 10vw;
-  margin-right: 10vw;
+.block {
+  display: block;
 }
 
 .flex {
@@ -576,10 +576,6 @@ video {
   width: 100%;
 }
 
-.w-\[90\%\] {
-  width: 90%;
-}
-
 .list-none {
   list-style-type: none;
 }
@@ -588,23 +584,9 @@ video {
   gap: 1.25rem;
 }
 
-.rounded-md {
-  border-radius: 0.375rem;
-}
-
 .bg-\[\#19191a\] {
   --tw-bg-opacity: 1;
   background-color: rgb(25 25 26 / var(--tw-bg-opacity));
-}
-
-.bg-slate-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(71 85 105 / var(--tw-bg-opacity));
-}
-
-.bg-\[\#9a9395\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(154 147 149 / var(--tw-bg-opacity));
 }
 
 .bg-\[\#242523\] {
@@ -612,43 +594,8 @@ video {
   background-color: rgb(36 37 35 / var(--tw-bg-opacity));
 }
 
-.bg-\[\#868d8c\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(134 141 140 / var(--tw-bg-opacity));
-}
-
 .p-5 {
   padding: 1.25rem;
-}
-
-.px-5 {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-}
-
-.py-3 {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-
-.px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-.py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
-
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
 }
 
 .text-lg {
@@ -656,8 +603,9 @@ video {
   line-height: 1.75rem;
 }
 
-.font-semibold {
-  font-weight: 600;
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .text-\[\#ededee\] {
@@ -665,22 +613,6 @@ video {
   color: rgb(237 237 238 / var(--tw-text-opacity));
 }
 
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
 .underline {
   text-decoration-line: underline;
-}
-
-.transition-colors {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-.hover\:bg-slate-500:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(100 116 139 / var(--tw-bg-opacity));
 }
