@@ -1,6 +1,10 @@
 {% macro post(title, description) %}
-<div class="bg-red-500">
-    <h1>{{title}}</h1>
+
+<div class="bg-[#242523] p-3 rounded-sm">
+    <a href="/">
+        <h1 class="text-xl font-bold underline">{{title}}</h1>
+    </a>
     <p>{{description}}</p>
 </div>
+
 {% endmacro %}

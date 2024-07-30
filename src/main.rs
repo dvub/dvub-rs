@@ -4,7 +4,7 @@ use std::{
 };
 
 use askama::Template;
-use axum::{routing::get, Router};
+use axum::{extract::Path as AxumPath, routing::get, Router};
 use notify::{RecursiveMode, Watcher};
 use scraper::{Html, Selector};
 use tokio::net::TcpListener;
@@ -26,12 +26,23 @@ async fn main() {
     let app = Router::new()
         .route("/", get(root))
         .route("/posts", get(posts))
+        .route("/posts/:post", get(render_post))
         // serve assets directory for compiled tailwind CSS
         .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
         .layer(livereload);
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
+}
+
+#[derive(Template)]
+#[template(path = "{{posts}}")]
+struct PostTemplate {
+    post: String,
+}
+
+async fn render_post(AxumPath(post): AxumPath<String>) -> PostTemplate {
+    PostTemplate { post }
 }
 
 #[derive(Template)]
