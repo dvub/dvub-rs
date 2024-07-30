@@ -1,9 +1,24 @@
+{%- import "components/post.html" as post -%}
+
+
 {% extends "base.html" %}
+
 
 {% block meta %}
 <title>Posts | DVUB</title>
 {% endblock %}
 
 {% block content %}
+
 <p>Check out some of my posts!</p>
+<div class="">
+    <p>hi</p>
+    {% for post in posts %}
+
+
+    {% call post::post(post.title, post.description) %}
+
+    {% endfor %}
+</div>
+
 {% endblock %}
