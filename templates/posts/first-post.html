@@ -11,16 +11,28 @@
 
 {% block content %}
 
-<h1 class="text-2xl my-3 font-bold">Why? & Inspiration </h1>
-
-There were a lot of factors that influenced me in building out this project. Most recently, after getting tired out by some other projects (which I should definitely write about soon), I wanted to start something new. Lately I feel like I've been on a Rust roll, so I decided to revisit web development, but with a Rust-based stack.
-
-<hr class="m-5 bg-gray-200"/>
-
-For a while now, I've wanted to redesign my personal website to be <b>simpler,</b> not only in terms of the UI/UX, but also (and more importantly <i>for me</i>) the DX. I created the first iteration of my personal website nearly 2 years ago in Next.js, and although it was fun, there was a lot of hassle and complexity involved (a lot of it was probably due to my inexperience as a developer but we'll ignore that).
+<h1 class="text-2xl my-3 font-bold">Why? | Inspiration </h1>
+<p>
+There were a lot of factors that influenced me in building out this project. Most recently, after getting tired out by some other projects (which I should definitely write about soon), I wanted to start something new. Lately I feel like I've been on a Rust roll, so I decided to revisit web development, but with a Rust-based stack. (more about why I chose Rust later)
 
 <hr class="m-5 bg-gray-200"/>
 
-As a developer, I watch a lot of YouTube and programming and software, etc. And one of the topics I've seen a lot recently a
+For a while now, I've wanted to redesign my personal website to be <b>simpler,</b> not only in terms of the UI/UX, but also (and more importantly <i>for me</i>) the DX. I created the first iteration of my personal website nearly 2 years ago in Next.js, and although it was fun, there was a lot of hassle and complexity involved (a lot of it was probably due to my inexperience as a developer but we'll ignore that). 
+
+<hr class="m-5 bg-gray-200"/>
+
+Another influence in my decision to recreate my website was, well, influencers - specifically software streamers/YouTubers - talking about these hype, new, JS-less web dev stacks - like Go + HTMX, etc. - My impersonable self would have jumped right on that train <i>if I knew Go</i>, but, well, I don't. I do, however, know an even better language: <b>Rust!</b>
+</p>
+<h1 class="text-2xl my-3 font-bold">How? | The Stack</h1>
+<p>
+    Here it is, the moment you've been waiting for, the sauce, the magic, the stack (drumroll, please!): <b>Rust + Axum + Tera + HTML ( + Tailwind I guess). </b> Let me break that down a bit, since some of those choices might be confusing. 
+    <ul class="list-disc m-3">
+        <li>Tera? - While I was doing research for this project, I was originally going to use Askama. However, I wanted to do some dynamic routing, which would mean dynamic template rendering, which is not really Askama's thing, considering it's strongly typed. </li>
+        <li>HTML?? (<b>NOT HTMX???</b>) - Yes, well, at least at the time of me writing this. HTMX is largely meant for communicating with your server, for example when submitting a form, etc. But this site doesn't really have a lot of that! It's just a bunch of text and some styling. Maybe if I added a comment feature on my posts, I would have a use case for HTMX, but for now, plain Ol' HTML will do.</li>
+        <li>Tailwind! - Ever since I picked up Tailwind, writing plain CSS just feels so... bland... </li>
+    </ul>
+</p>
+
+
 
 {% endblock %}
