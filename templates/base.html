@@ -22,8 +22,9 @@
 <body class="bg-[#19191a] text-[#ededee]">
     <div>
         <ul class="p-5 w-full flex text-xl gap-5 list-none bg-[#242523]">
-            {% call nav::item("/", "Home") %}
-            {% call nav::item("/posts", "Posts") %}
+
+            {{ nav::item(href="/", label="Home") }}
+            {{ nav::item(href="/posts", label="Posts") }}
         </ul>
 
     </div>

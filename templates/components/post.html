@@ -1,7 +1,7 @@
-{% macro post(title, description) %}
+{% macro post(href, title, description) %}
 
 <div class="bg-[#242523] p-3 rounded-sm">
-    <a href="/">
+    <a href="{{ href }}">
         <h1 class="text-xl font-bold underline">{{title}}</h1>
     </a>
     <p>{{description}}</p>

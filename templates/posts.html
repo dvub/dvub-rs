@@ -14,7 +14,7 @@
 
 <div class="md:grid-cols-4 sm:grid-cols-2 grid gap-4 mt-10">
     {% for post in posts %}
-    {% call post::post(post.title, post.description) %}
+    {{ post::post(href=post.href, title=post.title, description=post.description) }}
     {% endfor %}
 </div>
 
