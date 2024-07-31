@@ -50,6 +50,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(root))
         .route("/posts", get(posts))
+        // uses a capture!
         .route("/posts/:post", get(render_post))
         // serve assets directory for compiled tailwind CSS
         .nest_service("/assets", tower_http::services::ServeDir::new("assets"))

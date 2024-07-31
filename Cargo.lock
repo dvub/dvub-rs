@@ -545,7 +545,6 @@ name = "htrx"
 version = "0.1.0"
 dependencies = [
  "axum",
- "lazy_static",
  "notify",
  "scraper",
  "serde",

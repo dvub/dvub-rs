@@ -3,5 +3,10 @@
 @tailwind utilities;
 
 * {
-    font-family: 'Fira Sans'
+    font-family: "Fira Sans";
+}
+
+code,
+.token {
+    font-family: "JetBrains Mono", monospace !important;
 }
