@@ -2,7 +2,7 @@
 
 {% block meta %}
 
-<title>My First Post!</title>
+<title>How I Rebuilt my Website (with Rust!)</title>
 <meta name="description" content="And How I Escaped the JS (React) Ecosystem">
 <meta name="keywords" content="TODO">
 <meta name="author" content="dvub">
@@ -10,6 +10,8 @@
 {% endblock %}
 
 {% block content %}
+<h1 class="text-3xl">How I Rebuilt my Website (with Rust!)</h1>
+<p>And how you can build your own blog!</p>
 
 <h1 class="text-2xl my-3 font-bold">Why? | Inspiration </h1>
 <p>
@@ -68,34 +70,63 @@
 </ul>
 </p>
 <h1 class="text-2xl my-3 font-bold">Title..?</h1>
-
+Here's the backend code:
 <pre><code class="language-rust">
-let state = Arc::new(AppState {
-    tera: {
-        let mut tera = match Tera::new("templates/**/*.html") {
-            Ok(t) => t,
-            Err(e) => {
-                println!("Parsing error(s): {}", e);
-                ::std::process::exit(1);
-            }
-        };
-        tera.autoescape_on(vec![".html"]);
+#[tokio::main]
+async fn main() {
+    // set up state
+    let state = Arc::new(AppState {
+        tera: {
+            let mut tera = match Tera::new("templates/**/*.html") {
+                Ok(t) => t,
+                Err(e) => {
+                    println!("Parsing error(s): {}", e);
+                    ::std::process::exit(1);
+                }
+            };
+            // i dont know what this does
+            tera.autoescape_on(vec![".html"]);
 
-        tera
-    },
-});
+            tera
+        },
+    });
 
-let app = Router::new()
-    .route("/", get(root))
-    .route("/posts", get(posts))
-    // uses a capture!
-    .route("/posts/:post", get(render_post))
-    // serve assets directory for compiled tailwind CSS
-    .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
-    .with_state(state);
+    // set up route handling and assets
+    let app = Router::new()
+        .route("/", get(root))
+        .route("/posts", get(posts))
+        // uses a capture!
+        .route("/posts/:post", get(render_post))
+        // serve assets directory for compiled tailwind CSS
+        .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
+        .with_state(state);
 
-let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
-axum::serve(listener, app).await.unwrap();
+    let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+
 </code></pre>
+Now, if you want live reloading, add this <b>below your app definition</b>:
+<pre><code class="language-rust">let app = ...
+#[cfg(debug_assertions)]
+let app = {
+    use notify::Watcher;
+    let livereload = tower_livereload::LiveReloadLayer::new();
+    let reloader = livereload.reloader();
+    let mut watcher = notify::recommended_watcher(move |_| reloader.reload()).unwrap();
+    watcher
+        .watch(
+            std::path::Path::new("assets"),
+            notify::RecursiveMode::Recursive,
+        )
+        .unwrap();
+    watcher
+        .watch(
+            std::path::Path::new("templates"),
+            notify::RecursiveMode::Recursive,
+        )
+        .unwrap();
+    app.layer(livereload)
+};</code></pre>
 
 {% endblock %}

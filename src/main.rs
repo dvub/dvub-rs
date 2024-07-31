@@ -10,11 +10,12 @@ use axum::{
     routing::get,
     Router,
 };
-use notify::{RecursiveMode, Watcher};
+
 use scraper::{Html as ScraperHtml, Selector};
 
 use tera::{Context, Tera};
 use tokio::net::TcpListener;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 struct AppState {
     tera: Tera,
@@ -22,6 +23,10 @@ struct AppState {
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
     let state = Arc::new(AppState {
         tera: {
             let mut tera = match Tera::new("templates/**/*.html") {
@@ -38,15 +43,6 @@ async fn main() {
         },
     });
 
-    let livereload = tower_livereload::LiveReloadLayer::new();
-    let reloader = livereload.reloader();
-    let mut watcher = notify::recommended_watcher(move |_| reloader.reload()).unwrap();
-    watcher
-        .watch(Path::new("assets/"), RecursiveMode::Recursive)
-        .unwrap();
-    watcher
-        .watch(Path::new("templates"), RecursiveMode::Recursive)
-        .unwrap();
     let app = Router::new()
         .route("/", get(root))
         .route("/posts", get(posts))
@@ -54,8 +50,29 @@ async fn main() {
         .route("/posts/:post", get(render_post))
         // serve assets directory for compiled tailwind CSS
         .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
-        .with_state(state)
-        .layer(livereload);
+        .with_state(state);
+
+    #[cfg(debug_assertions)]
+    let app = {
+        use notify::Watcher;
+        let livereload = tower_livereload::LiveReloadLayer::new();
+        let reloader = livereload.reloader();
+        let mut watcher = notify::recommended_watcher(move |_| reloader.reload()).unwrap();
+        watcher
+            .watch(
+                std::path::Path::new("assets"),
+                notify::RecursiveMode::Recursive,
+            )
+            .unwrap();
+        watcher
+            .watch(
+                std::path::Path::new("templates"),
+                notify::RecursiveMode::Recursive,
+            )
+            .unwrap();
+        tracing::info!("Reloading!");
+        app.layer(livereload)
+    };
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
