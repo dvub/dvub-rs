@@ -15,7 +15,6 @@ use scraper::{Html as ScraperHtml, Selector};
 
 use tera::{Context, Tera};
 use tokio::net::TcpListener;
-use tower_livereload::LiveReloadLayer;
 
 struct AppState {
     tera: Tera,
@@ -39,6 +38,15 @@ async fn main() {
         },
     });
 
+    let livereload = tower_livereload::LiveReloadLayer::new();
+    let reloader = livereload.reloader();
+    let mut watcher = notify::recommended_watcher(move |_| reloader.reload()).unwrap();
+    watcher
+        .watch(Path::new("assets/"), RecursiveMode::Recursive)
+        .unwrap();
+    watcher
+        .watch(Path::new("templates"), RecursiveMode::Recursive)
+        .unwrap();
     let app = Router::new()
         .route("/", get(root))
         .route("/posts", get(posts))
@@ -46,7 +54,7 @@ async fn main() {
         // serve assets directory for compiled tailwind CSS
         .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
         .with_state(state)
-        .layer(configure_live_reload());
+        .layer(livereload);
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
@@ -78,18 +86,6 @@ async fn posts(State(state): State<Arc<AppState>>) -> Html<String> {
     Html(state.tera.render("posts.html", &context).unwrap())
 }
 
-fn configure_live_reload() -> LiveReloadLayer {
-    let livereload = tower_livereload::LiveReloadLayer::new();
-    let reloader = livereload.reloader();
-    let mut watcher = notify::recommended_watcher(move |_| reloader.reload()).unwrap();
-    watcher
-        .watch(Path::new("assets/"), RecursiveMode::Recursive)
-        .unwrap();
-    watcher
-        .watch(Path::new("templates"), RecursiveMode::Recursive)
-        .unwrap();
-    livereload
-}
 #[derive(serde::Serialize)]
 struct Post {
     href: String,
