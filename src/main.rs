@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{routing::get, Router};
 
 use htrx::{
-    handlers::{posts, render_post, root},
+    handlers::{render_post, root},
     AppState,
 };
 
@@ -20,10 +20,9 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(root))
-        .route("/posts", get(posts))
         // uses a capture!
         .route("/posts/:post", get(render_post))
-        // serve assets directory for compiled tailwind CSS
+        // serve assets directory for CSS, JS, media, etc.
         .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
         .with_state(state);
 
@@ -50,5 +49,7 @@ async fn main() {
     };
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
+
+    tracing::info!("Started hosting on port 3000");
     axum::serve(listener, app).await.unwrap();
 }
