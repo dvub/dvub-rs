@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{%- import "components/post.html" as post -%}
+
 
 {% block meta %}
 <title>Home | DVUB</title>
@@ -16,5 +18,12 @@
 <p>Hi! I'm a full-time student. I really like music, electronics, programming, and a bunch of other stuff! Check
     out some of my posts if you want :) </p>
 <br />
+
+<div class="md:grid-cols-4 sm:grid-cols-2 grid gap-4 mt-10">
+    {% for post in posts %}
+    {{ post::post(href=post.href, title=post.title, description=post.description) }}
+    {% endfor %}
+</div>
+
 
 {% endblock %}

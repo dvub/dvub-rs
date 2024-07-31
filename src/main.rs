@@ -69,13 +69,15 @@ async fn render_post(
     Html(
         state
             .tera
-            .render(&format!("posts/{}", r), &context)
+            .render(&format!("posts/{}.html", r), &context)
             .unwrap(),
     )
 }
 
 async fn root(State(state): State<Arc<AppState>>) -> Html<String> {
-    let context = Context::new();
+    let mut context = Context::new();
+    context.insert("posts", &get_posts(Path::new("templates/posts")));
+
     Html(state.tera.render("index.html", &context).unwrap())
 }
 
@@ -100,7 +102,7 @@ fn get_posts(path: &Path) -> Vec<Post> {
 
     for entry in posts_dir {
         let path = entry.unwrap().path();
-        let href = &path.file_name().unwrap().to_str().unwrap();
+        let href = &path.file_stem().unwrap().to_str().unwrap();
         let str = read_to_string(&path).unwrap();
 
         let html = ScraperHtml::parse_fragment(&str);
