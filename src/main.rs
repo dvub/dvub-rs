@@ -1,37 +1,43 @@
 use std::{
     fs::{read_dir, read_to_string},
     path::Path,
+    sync::Arc,
 };
 
-use axum::{extract::Path as AxumPath, response::Html, routing::get, Router};
+use axum::{
+    extract::{Path as AxumPath, State},
+    response::Html,
+    routing::get,
+    Router,
+};
 use notify::{RecursiveMode, Watcher};
 use scraper::{Html as ScraperHtml, Selector};
 
-use lazy_static::lazy_static;
 use tera::{Context, Tera};
 use tokio::net::TcpListener;
 use tower_livereload::LiveReloadLayer;
 
-lazy_static! {
-    pub static ref TERA: Tera = {
-        let mut tera = match Tera::new("templates/**/*.html") {
-            Ok(t) => t,
-            Err(e) => {
-                println!("Parsing error(s): {}", e);
-                ::std::process::exit(1);
-            }
-        };
-
-        // i dont know what this does
-        tera.autoescape_on(vec![".html"]);
-
-        tera
-    };
+struct AppState {
+    tera: Tera,
 }
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt::init();
+    let state = Arc::new(AppState {
+        tera: {
+            let mut tera = match Tera::new("templates/**/*.html") {
+                Ok(t) => t,
+                Err(e) => {
+                    println!("Parsing error(s): {}", e);
+                    ::std::process::exit(1);
+                }
+            };
+            // i dont know what this does
+            tera.autoescape_on(vec![".html"]);
+
+            tera
+        },
+    });
 
     let app = Router::new()
         .route("/", get(root))
@@ -39,27 +45,37 @@ async fn main() {
         .route("/posts/:post", get(render_post))
         // serve assets directory for compiled tailwind CSS
         .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
+        .with_state(state)
         .layer(configure_live_reload());
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn render_post(AxumPath(r): AxumPath<String>) -> Html<String> {
+async fn render_post(
+    AxumPath(r): AxumPath<String>,
+    State(state): State<Arc<AppState>>,
+) -> Html<String> {
     let context = Context::new();
-    Html(TERA.render(&format!("posts/{}", r), &context).unwrap())
+
+    Html(
+        state
+            .tera
+            .render(&format!("posts/{}", r), &context)
+            .unwrap(),
+    )
 }
 
-async fn root() -> Html<String> {
+async fn root(State(state): State<Arc<AppState>>) -> Html<String> {
     let context = Context::new();
-    Html(TERA.render("index.html", &context).unwrap())
+    Html(state.tera.render("index.html", &context).unwrap())
 }
 
-async fn posts() -> Html<String> {
+async fn posts(State(state): State<Arc<AppState>>) -> Html<String> {
     let mut context = Context::new();
     context.insert("posts", &get_posts(Path::new("templates/posts")));
 
-    Html(TERA.render("posts.html", &context).unwrap())
+    Html(state.tera.render("posts.html", &context).unwrap())
 }
 
 fn configure_live_reload() -> LiveReloadLayer {
