@@ -1,6 +1,6 @@
 use std::{path::Path, sync::Arc};
 
-use crate::{get_posts, AppState};
+use crate::{get_posts, AppError, AppState};
 use axum::{
     extract::{Path as AxumPath, State},
     response::Html,
@@ -21,9 +21,12 @@ pub async fn render_post(
     )
 }
 
-pub async fn root(State(state): State<Arc<AppState>>) -> Html<String> {
+pub async fn root(State(state): State<Arc<AppState>>) -> Result<Html<String>, AppError> {
     let mut context = Context::new();
-    context.insert("posts", &get_posts(Path::new("templates/posts")));
 
-    Html(state.tera.render("index.html", &context).unwrap())
+    let posts = get_posts(Path::new("templates/posts"))?;
+    context.insert("posts", &posts);
+    let rendered_content = state.tera.render("index.html", &context)?;
+
+    Ok(Html(rendered_content))
 }

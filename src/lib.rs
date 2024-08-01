@@ -1,5 +1,6 @@
 pub mod handlers;
 
+use axum::{http::StatusCode, response::IntoResponse};
 use scraper::{Html as ScraperHtml, Selector};
 use std::{
     fs::{read_dir, read_to_string},
@@ -16,6 +17,26 @@ pub struct Post {
     href: String,
     title: String,
     description: String,
+}
+
+pub struct AppError(anyhow::Error);
+impl IntoResponse for AppError {
+    fn into_response(self) -> axum::response::Response {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Something went wrong: {}", self.0),
+        )
+            .into_response()
+    }
+}
+
+impl<E> From<E> for AppError
+where
+    E: Into<anyhow::Error>,
+{
+    fn from(value: E) -> Self {
+        Self(value.into())
+    }
 }
 
 impl AppState {
@@ -36,32 +57,38 @@ impl AppState {
     }
 }
 
-pub fn get_posts(path: &Path) -> Vec<Post> {
-    let posts_dir = read_dir(path).unwrap();
-
+pub fn get_posts(path: &Path) -> anyhow::Result<Vec<Post>> {
+    let posts_dir = read_dir(path)?;
     let mut posts_vec = Vec::new();
 
     for entry in posts_dir {
-        let path = entry.unwrap().path();
+        let path = entry?.path();
 
+        // TODO:
+        // deal with unwraps
         let href = &path.file_stem().unwrap().to_str().unwrap();
-        let str = read_to_string(&path).unwrap();
+        let file_contents = read_to_string(&path)?;
 
-        let html = ScraperHtml::parse_fragment(&str);
+        let html = ScraperHtml::parse_fragment(&file_contents);
 
+        // TODO:
+        // figure out what to do with these unwraps
         let title_selector = Selector::parse("title").unwrap();
         let meta_selector = Selector::parse("meta").unwrap();
 
         let mut title_results = html.select(&title_selector);
         let meta_results = html.select(&meta_selector);
 
-        let title = title_results.nth(0).unwrap().inner_html();
+        let title = title_results
+            .nth(0)
+            .expect("No title element found.")
+            .inner_html();
 
-        let mut description = "";
+        let mut description = "No description found..";
 
-        for n in meta_results {
-            if n.attr("name") == Some("description") {
-                description = n.attr("content").unwrap();
+        for meta in meta_results {
+            if meta.attr("name") == Some("description") {
+                description = meta.attr("content").expect("description had no content");
             }
         }
         posts_vec.push(Post {
@@ -70,7 +97,7 @@ pub fn get_posts(path: &Path) -> Vec<Post> {
             description: description.to_owned(),
         });
     }
-    posts_vec
+    Ok(posts_vec)
 }
 
 #[cfg(test)]
@@ -80,7 +107,7 @@ mod tests {
 
     #[test]
     fn test_read_metadata() {
-        let results = get_posts(Path::new("./test-templates"));
+        let results = get_posts(Path::new("./test-templates")).unwrap();
 
         assert_eq!(results.len(), 1); // make sure theres only 1 post read from the 1 file
         assert_eq!(results[0].title, "Test");
