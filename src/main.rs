@@ -8,14 +8,9 @@ use htrx::{
 };
 
 use tokio::net::TcpListener;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::registry()
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-
     let state = Arc::new(AppState::new());
 
     let app = Router::new()
@@ -44,12 +39,12 @@ async fn main() {
                 notify::RecursiveMode::Recursive,
             )
             .unwrap();
-        tracing::info!("Reloading!");
+        println!("Reloading..");
         app.layer(livereload)
     };
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
 
-    tracing::info!("Started hosting on port 3000");
+    println!("listening on port 3000..");
     axum::serve(listener, app).await.unwrap();
 }

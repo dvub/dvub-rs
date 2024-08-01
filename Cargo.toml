@@ -12,9 +12,8 @@ serde = { version = "1.0.204", features = ["serde_derive"] }
 tower-http = { version = "0.5.2", features = ["fs", "trace"] }
 tower-livereload = "0.9.3"
 notify = "6.1.1"
-# for diagnostics, etc.
-tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
-tracing = "0.1.40"
+
+scraper = "0.19.1"
+
 # templating
 tera = "1"
-scraper = "0.19.1"

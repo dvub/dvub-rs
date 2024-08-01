@@ -43,6 +43,7 @@ pub fn get_posts(path: &Path) -> Vec<Post> {
 
     for entry in posts_dir {
         let path = entry.unwrap().path();
+
         let href = &path.file_stem().unwrap().to_str().unwrap();
         let str = read_to_string(&path).unwrap();
 
