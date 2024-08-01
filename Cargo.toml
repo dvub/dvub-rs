@@ -12,7 +12,7 @@ serde = { version = "1.0.204", features = ["serde_derive"] }
 tower-http = { version = "0.5.2", features = ["fs", "trace"] }
 tower-livereload = "0.9.3"
 notify = "6.1.1"
-
+# scraping might look suspicious but trust me its only for parsing metadata from posts
 scraper = "0.19.1"
 
 # templating

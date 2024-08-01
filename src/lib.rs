@@ -8,6 +8,8 @@ use std::{
 };
 use tera::Tera;
 
+// overcomplicating things? maybe..
+// but learning about how axum works? definitely!
 // https://github.com/tokio-rs/axum/blob/main/examples/anyhow-error-response/src/main.rs
 pub struct AppError(anyhow::Error);
 impl IntoResponse for AppError {
@@ -28,10 +30,12 @@ where
         Self(value.into())
     }
 }
+
 pub struct AppState {
     tera: Tera,
 }
-
+// basically just copied from docs:
+// https://keats.github.io/tera/docs/
 impl AppState {
     // TODO:
     // parameterize new() with template path
@@ -49,13 +53,17 @@ impl AppState {
         AppState { tera }
     }
 }
+/// Struct to represent an HTML file in the `templates/posts` directory.
 #[derive(serde::Serialize)]
 pub struct Post {
     href: String,
     title: String,
     description: String,
 }
-
+/// Reads HTML files in a given directory `path` and returns a vector of their metadata as `Post`s.
+///
+/// This function will fail if the given directory has any directories within it (i.e. if it does not contain *only* HTML files).
+/// Furthermore, the function will fail if no <title> tag exists in each file
 pub fn get_posts(path: &Path) -> anyhow::Result<Vec<Post>> {
     let posts_dir = read_dir(path)?;
     let mut posts_vec = Vec::new();
@@ -79,21 +87,22 @@ pub fn get_posts(path: &Path) -> anyhow::Result<Vec<Post>> {
         let meta_results = html.select(&meta_selector);
 
         let title = title_results
-            .nth(0)
+            .next()
             .expect("No title element found.")
             .inner_html();
 
-        let mut description = "No description found..";
-
+        // TODO:
+        // is there a better way to do this?
+        let mut description = None;
         for meta in meta_results {
             if meta.attr("name") == Some("description") {
-                description = meta.attr("content").expect("description had no content");
+                description = Some(meta.attr("content").expect("description had no content"));
             }
         }
         posts_vec.push(Post {
             href: format!("posts/{}", href.to_string()),
             title,
-            description: description.to_owned(),
+            description: description.expect("No description found").to_owned(),
         });
     }
     Ok(posts_vec)
