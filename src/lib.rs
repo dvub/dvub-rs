@@ -8,17 +8,7 @@ use std::{
 };
 use tera::Tera;
 
-pub struct AppState {
-    tera: Tera,
-}
-
-#[derive(serde::Serialize)]
-pub struct Post {
-    href: String,
-    title: String,
-    description: String,
-}
-
+// https://github.com/tokio-rs/axum/blob/main/examples/anyhow-error-response/src/main.rs
 pub struct AppError(anyhow::Error);
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
@@ -38,6 +28,9 @@ where
         Self(value.into())
     }
 }
+pub struct AppState {
+    tera: Tera,
+}
 
 impl AppState {
     // TODO:
@@ -55,6 +48,12 @@ impl AppState {
 
         AppState { tera }
     }
+}
+#[derive(serde::Serialize)]
+pub struct Post {
+    href: String,
+    title: String,
+    description: String,
 }
 
 pub fn get_posts(path: &Path) -> anyhow::Result<Vec<Post>> {

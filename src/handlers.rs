@@ -10,16 +10,12 @@ use tera::Context;
 pub async fn render_post(
     AxumPath(r): AxumPath<String>,
     State(state): State<Arc<AppState>>,
-) -> Html<String> {
+) -> Result<Html<String>, AppError> {
     let context = Context::new();
     // TODO:
     // handle when requested post doesn't exist - render 404 page or something
-    Html(
-        state
-            .tera
-            .render(&format!("posts/{}.html", r), &context)
-            .unwrap(),
-    )
+    let rendered_content = state.tera.render(&format!("posts/{}.html", r), &context)?;
+    Ok(Html(rendered_content))
 }
 
 pub async fn root(State(state): State<Arc<AppState>>) -> Result<Html<String>, AppError> {
