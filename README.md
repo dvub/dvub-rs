@@ -11,12 +11,14 @@ This is mostly just for me, but if you want to clone my website and work on it, 
 For the backend:
 ```
 cargo install cargo-shuttle
+# for development:
 cargo shuttle run
-
+# after pushing changes, to update hosting: 
+cargo shuttle deploy
 ```
 
 For the frontend: 
 ```
 npm install # or whatever package manager you want
-npm run dev # or `run prod` for minified
+npm run dev # or `run prod` for minified css
 ```

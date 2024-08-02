@@ -7,8 +7,9 @@ edition = "2021"
 tokio = { version = "1.39.2", features = ["full"] }
 axum = "0.7.5"
 serde = { version = "1.0.204", features = ["serde_derive"] }
+anyhow = "1.0.86"
 
-# dependencies for live reloading
+# serve assets directory
 tower-http = { version = "0.5.2", features = ["fs", "trace"] }
 
 # scraping might look suspicious but trust me its only for parsing metadata from posts
@@ -16,6 +17,7 @@ scraper = "0.19.1"
 
 # templating
 tera = "1"
-anyhow = "1.0.86"
+
+# for hosting with shuttle (pretty cool!)
 shuttle-axum = "0.47.0"
 shuttle-runtime = "0.47.0"
