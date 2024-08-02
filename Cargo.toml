@@ -18,3 +18,5 @@ scraper = "0.19.1"
 # templating
 tera = "1"
 anyhow = "1.0.86"
+shuttle-axum = "0.47.0"
+shuttle-runtime = "0.47.0"
