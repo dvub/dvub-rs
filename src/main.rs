@@ -2,7 +2,7 @@ use std::{path::Path, sync::Arc};
 
 use axum::{routing::get, Router};
 
-use htrx::{
+use dvub_rs::{
     handlers::{render_post, root},
     AppState,
 };

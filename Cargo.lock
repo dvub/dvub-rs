@@ -504,6 +504,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "dvub-rs"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "axum 0.7.5",
+ "notify",
+ "scraper",
+ "serde",
+ "shuttle-axum",
+ "shuttle-runtime",
+ "tera",
+ "tokio",
+ "tower-http",
+ "tower-livereload",
+]
+
+[[package]]
 name = "ego-tree"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -767,23 +784,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.72",
-]
-
-[[package]]
-name = "htrx"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "axum 0.7.5",
- "notify",
- "scraper",
- "serde",
- "shuttle-axum",
- "shuttle-runtime",
- "tera",
- "tokio",
- "tower-http",
- "tower-livereload",
 ]
 
 [[package]]
