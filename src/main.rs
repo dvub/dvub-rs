@@ -1,4 +1,4 @@
-use std::{path::Path, sync::Arc};
+use std::sync::Arc;
 
 use axum::{routing::get, Router};
 
@@ -6,8 +6,6 @@ use dvub_rs::{
     handlers::{render_post, root},
     AppState,
 };
-
-use notify::RecursiveMode;
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
     // the tera docs just say to use lazy_static for tera's template state
@@ -22,24 +20,5 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .nest_service("/assets", tower_http::services::ServeDir::new("assets"))
         .with_state(state);
 
-    // only configure live reload if we're debugging (not in releases!)
-    #[cfg(debug_assertions)]
-    let app = {
-        use notify::Watcher;
-        let livereload = tower_livereload::LiveReloadLayer::new();
-        let reloader = livereload.reloader();
-
-        let mut watcher = notify::recommended_watcher(move |_| reloader.reload()).unwrap();
-        // watch the directories of interest
-        watcher
-            .watch(Path::new("assets"), RecursiveMode::Recursive)
-            .unwrap();
-        watcher
-            .watch(Path::new("templates"), RecursiveMode::Recursive)
-            .unwrap();
-        println!("Reloading..");
-        // of course, add our live reloading to our app
-        app.layer(livereload)
-    };
     Ok(app.into())
 }
