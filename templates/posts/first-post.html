@@ -10,9 +10,10 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-3xl">How I Rebuilt my Website (with Rust!)</h1>
-<p>And how you can build your own blog!</p>
-
+<div>
+    <h1 class="text-3xl font-bold">How I Rebuilt my Website with Rust</h1>
+    <p class="text-sm">And how you can build your own blog! // dvub </p>
+</div>
 <h1 class="text-2xl my-3 font-bold">Why? | Inspiration </h1>
 <p>
     There were a lot of factors that influenced me in building out this project. Most recently, after getting tired out
@@ -38,22 +39,23 @@
 <h1 class="text-2xl my-3 font-bold">How? | The Stack</h1>
 <p>
     Here it is, the moment you've been waiting for, the sauce, the magic, the stack (drumroll, please!): <b>Rust + Axum
-        + Tera + HTML ( + Tailwind I guess). </b> Let me break that down a bit, since some of those choices might be
-    confusing.
+        + Tera + HTML ( + Tailwind I guess). </b> Let me break that down a bit.
+</p>
 <ul class="list-disc m-3">
     <li>
-        <h3 class="text-xl">Rust & Axum</h3>
-        I already explained why I wanted to use Rust
+        <h3 class="text-xl font-semibold">Rust & Axum</h3>
+        As I've (sort of) mentioned before, I just kinda like Rust! As for axum, though, I chose it because it's one
+        of the most popular web frameworks, and I want to go with something stable and production-ready.
     </li>
     <li>
-        <h3 class="text-xl">Tera (And not Askama?)</h3>
+        <h3 class="text-xl font-semibold">Tera (And not Askama?)</h3>
         While I was doing research for this project, I was originally going to use Askama.
-        However, I wanted to
-        do some dynamic routing, which would mean dynamic template rendering, which is not really Askama's thing,
-        considering it's strongly typed.
+        However, I wanted to just have one handler/route for <i>all of my posts</i>, and Askama can't really do that.
+        So, while I am trading off some type safety for Tera, my code won't be filled with a ton of empty structs for
+        each post I want to write.
     </li>
     <li>
-        <h3 class="text-xl">
+        <h3 class="text-xl font-semibold">
             HTML?? (<b>NOT HTMX???</b>)
         </h3>
         Yes, well, at least at the time of me writing this. HTMX is largely meant for
@@ -68,9 +70,36 @@
     </li>
 
 </ul>
+<h1 class="text-2xl my-3 font-bold">DX | Worth it? </h1>
+<p>As I mentioned before, I wanted to rebuild my website (without JS) for the improved development experience. So, how
+    much better is it?
+    Right now, <b>it's probably too early to say.</b> But, considering that it only took me a few days to draft the
+    backend architecture, styling, and a first post, I think that's really amazing.
+
+    <hr class="m-5 bg-gray-200" />
+
+    Furthermore, considering that for the past 2 years, almost all of my web endeavours have involved React, building
+    this project has been <b>a deep breath of fresh air.</b> That's not to say that React is bad, of course.
+
 </p>
-<h1 class="text-2xl my-3 font-bold">Title..?</h1>
-Here's the backend code:
+
+<h1 class="text-2xl my-3 font-bold">Credit </h1>
+<p> I'd like to finish this up by linking some awesome repositories that I drew a lot of inspiration (and code) from:
+</p>
+<ul class="list-disc">
+    <li>
+        <a href="https://github.com/Bechma/todo-axum-askama-htmx" class="underline">Benchma's Todo Example</a>
+    </li>
+    <li>
+        <a href="https://github.com/jacob-ian/rs-htmx" class="underline">Jacob-ian's Example</a>
+    </li>
+</ul>
+<p>Diving into a new stack was challenging at first, and I definitely couldn't have done it without these awesome
+    examples.
+</p>
+<!--
+<h1 class="text-2xl my-3 font-bold">Tutorial</h1>
+If you want to build something like this for yourself, here's some basic code.
 <pre><code class="language-rust">
 #[tokio::main]
 async fn main() {
@@ -129,4 +158,4 @@ let app = {
     app.layer(livereload)
 };</code></pre>
 
-{% endblock %}
+{% endblock %}-->
